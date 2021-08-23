@@ -1,8 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
+import { auth, db } from "./firebase";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 const ApexChart = () => {
-  const [chartData, setChartData] = useState({
+  const [dataPoint, setDataPoint] = useState([]);
+  const query = db.collection("data");
+  const [snapshot, loading, error] = useCollection(query);
+  const [series, setSeries] = useState([]);
+
+  useEffect(() => {
+    setSeries([
+      {
+        name: "Desktops",
+        //data: snapshot?.docs.map((doc) => doc.data().value),
+        data: snapshot?.docs.map((doc) => doc.data().value),
+      },
+    ]);
+  }, [snapshot]);
+
+  console.log(series);
+  console.log(snapshot?.docs);
+
+  const [chartData] = useState({
     series: [
       {
         name: "Desktops",
@@ -53,10 +73,11 @@ const ApexChart = () => {
     <div id="chart">
       <Chart
         options={chartData.options}
-        series={chartData.series}
+        series={series}
         type="line"
         height={350}
       />
+      <button onClick={() => auth().signOut()}>Sign Out</button>
     </div>
   );
 };
