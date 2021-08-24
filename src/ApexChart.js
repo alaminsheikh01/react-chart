@@ -5,30 +5,23 @@ import { useCollection } from "react-firebase-hooks/firestore";
 
 const ApexChart = () => {
   const [dataPoint, setDataPoint] = useState([]);
+  const [series, setSeries] = useState([]);
   const query = db.collection("data");
   const [snapshot, loading, error] = useCollection(query);
-  const [series, setSeries] = useState([]);
 
   useEffect(() => {
     setSeries([
       {
         name: "Desktops",
-        //data: snapshot?.docs.map((doc) => doc.data().value),
         data: snapshot?.docs.map((doc) => doc.data().value),
       },
     ]);
   }, [snapshot]);
 
-  console.log(series);
-  console.log(snapshot?.docs);
+  // console.log(series);
+  console.log(snapshot?.docs.value);
 
   const [chartData] = useState({
-    series: [
-      {
-        name: "Desktops",
-        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-      },
-    ],
     options: {
       chart: {
         height: 350,
